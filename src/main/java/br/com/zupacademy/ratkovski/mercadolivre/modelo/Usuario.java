@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
@@ -29,6 +30,7 @@ public class Usuario {
 	@Length(min = 6)
 	private String senha;
 	@NotNull
+	@PastOrPresent //passado ou presente mas n o futuro
 	private LocalDateTime instante = LocalDateTime.now();
 
 	/**
@@ -53,5 +55,10 @@ public class Usuario {
 		this.senha = senhaNoCript.hash();
 
 	}
+
+	
+
+
+	
 
 }

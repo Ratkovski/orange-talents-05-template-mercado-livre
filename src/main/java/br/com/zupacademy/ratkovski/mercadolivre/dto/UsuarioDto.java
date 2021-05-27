@@ -5,7 +5,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import br.com.zupacademy.ratkovski.mercadolivre.config.validation.UniqueValue;
 import br.com.zupacademy.ratkovski.mercadolivre.modelo.SenhaNoCript;
@@ -15,7 +14,9 @@ public class UsuarioDto {
 	@NotBlank(message = "O email é obrigatório")
 	@NotNull
 	@Email	
+	//poderia ser com a classe genérica mas acabei colocando uma personalizada
 	//@UniqueValue(domainClass = Usuario.class, fieldName = "email")
+	
 	private String email;
 	@NotBlank(message = "A senha é obrigatório")
 	@NotNull
@@ -34,6 +35,10 @@ public class UsuarioDto {
 	public Usuario toModel() {
 			return new Usuario(email,new SenhaNoCript(senha));
 		}
+
+	public String getEmail() {
+		return email;
+	}
 
 
 	}
