@@ -1,4 +1,4 @@
-package br.com.zupacademy.ratkovski.mercadolivre.config.validation;
+package br.com.zupacademy.ratkovski.mercadolivre.config.exception;
 
 public class ErroDeFormularioDto {
 	private String campo;
