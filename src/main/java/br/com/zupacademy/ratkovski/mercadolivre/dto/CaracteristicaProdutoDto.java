@@ -32,7 +32,7 @@ public class CaracteristicaProdutoDto {
 
 	@Override
 	public String toString() {
-		return "NovaCaracteristicaDto [nome=" + nome + ", descricao=" + descricao + "]";
+		return "CaracteristicaProdutoDto [nome=" + nome + ", descricao=" + descricao + "]";
 	}
 
 

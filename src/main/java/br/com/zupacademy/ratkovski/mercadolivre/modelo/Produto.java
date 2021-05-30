@@ -25,26 +25,26 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 
 import br.com.zupacademy.ratkovski.mercadolivre.dto.CaracteristicaProdutoDto;
+import br.com.zupacademy.ratkovski.mercadolivre.dto.ImagemDto;
 
 @Entity
 public class Produto {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@NotBlank 
+
+	@NotBlank
 	private String nome;
-	
-	
+
 	@Positive
-	private int quantidade; 
-	@NotBlank 
-	@Length(max = 1000) 
+	private int quantidade;
+	@NotBlank
+	@Length(max = 1000)
 	private String descricao;
-	
-	@Positive 
-	private BigDecimal valor; 
+
+	@Positive
+	private BigDecimal valor;
 	@NotNull
 	@Valid
 	@ManyToOne
@@ -54,54 +54,58 @@ public class Produto {
 	@ManyToOne
 	private Usuario usuario;
 	@Valid
-    @OneToMany(mappedBy = "produto" ,cascade =CascadeType.PERSIST)
+	@OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
 	private Set<CaracteristicaProduto> caracteristicas = new HashSet<>();
+
 	
-	
+	@OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE) // quando for atualizar produto atualiza as imagens															// junto
+	private Set<ImagemProduto> imagens = new HashSet<>();
+
 	@NotNull
-	@PastOrPresent //passado ou presente mas n o futuro
+	@PastOrPresent // passado ou presente mas n o futuro
 	private LocalDateTime instante = LocalDateTime.now();
+
 	@Deprecated
-	public Produto(){
-		
+	public Produto() {
+
 	}
 
-	public Produto(@NotBlank String nome,
-			@Positive int quantidade, 
-			@NotBlank @Length(max = 1000) String descricao,
-			@NotNull @Positive BigDecimal valor,
-			@NotNull @Valid Categoria categoria,
-			@NotNull @Valid Usuario usuario,
+	public Produto(@NotBlank String nome, @Positive int quantidade, @NotBlank @Length(max = 1000) String descricao,
+			@NotNull @Positive BigDecimal valor, @NotNull @Valid Categoria categoria, @NotNull @Valid Usuario usuario,
 			@Size(min = 3) @Valid Collection<CaracteristicaProdutoDto> caracteristicas) {
 
-				this.nome = nome;
-				this.quantidade = quantidade;
-				this.descricao = descricao;
-				this.valor = valor;
-				this.categoria = categoria;
-				this.usuario = usuario;
-				this.caracteristicas.addAll(caracteristicas
-						.stream().map(caracteristica -> caracteristica.toModel(this))
-						.collect(Collectors.toSet()) );
-				
-				/*faz inline
-				 * Set<CaracteristicaProdutoDto> novasCaracteristicas = caracteristicas
-				 * .stream().map(caracteristica -> caracteristica.toModel(this))
-				 * .collect(Collectors.toSet());
-				 * this.caracteristicas.addAll(novasCaracteristicas );
-				 */
-	Assert.isTrue(this.caracteristicas.size()>=3, "Todo produto precisa ter no minimo três caracteristicas");
+		this.nome = nome;
+		this.quantidade = quantidade;
+		this.descricao = descricao;
+		this.valor = valor;
+		this.categoria = categoria;
+		this.usuario = usuario;
+		this.caracteristicas.addAll(caracteristicas.stream().map(caracteristica -> caracteristica.toModel(this))
+				.collect(Collectors.toSet()));
+
+		/*
+		 * faz inline Set<CaracteristicaProdutoDto> novasCaracteristicas =
+		 * caracteristicas .stream().map(caracteristica -> caracteristica.toModel(this))
+		 * .collect(Collectors.toSet());
+		 * this.caracteristicas.addAll(novasCaracteristicas );
+		 */
+		Assert.isTrue(this.caracteristicas.size() >= 3, "Todo produto precisa ter no minimo três caracteristicas");
 	}
 
-
-	@Override
-	public String toString() {
-		return "Produto [id=" + id + ", nome=" + nome + ", quantidade=" + quantidade + ", descricao=" + descricao
-				+ ", valor=" + valor + ", categoria=" + categoria + ", usuario=" + usuario + ", caracteristicas="
-				+ caracteristicas + "]";
+	public void associaImagens(Set<String> links) {
+		Set<ImagemProduto> imagens = links.stream()
+				.map(link -> new ImagemProduto(this, link))
+				.collect(Collectors.toSet());
+		this.imagens.addAll(imagens);
 	}
 
+	public boolean pertenceUsuario(Usuario dono) {
 
-	
+		return this.usuario.equals(dono);
+	}
+
+	public Usuario getUsuario() {
+		return this.usuario;
+	}
 
 }

@@ -55,7 +55,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 		.antMatchers("/auth").permitAll()
 		.antMatchers("/usuarios/**").permitAll()
 		.antMatchers("/categorias").permitAll()
-		.antMatchers("/produtos").permitAll()
+		.antMatchers("/produtos/**").permitAll()
 		.anyRequest().authenticated()//qualquer outra requisicao precisa estar autenticada
 		.and().csrf().disable()//ataque mas quando usa token automaticamente desconsidera ai desabilita
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//metodo para dizer q n q usar sessao
