@@ -17,13 +17,25 @@ public class Autenticacao implements UserDetailsService{
 	@Autowired
 	private UsuarioRepository repository;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Usuario> usuario  = repository.findByEmail(username);
-		if(usuario.isPresent()) {
-		return usuario.get();
-	}
-	 throw new UsernameNotFoundException("Dados invalidos!");
+	/*
+	 * @Override public UserDetails loadUserByUsername(String username) throws
+	 * UsernameNotFoundException { Usuario usuario =
+	 * repository.findByEmail(username) .orElseThrow(()-> new
+	 * UsernameNotFoundException("Dados invalidos!"));
+	 * 
+	 * return new Usuario(usuario); }
+	 */
+
+
+  @Override public UserDetails loadUserByUsername(String username) throws
+  UsernameNotFoundException { 
+	  Optional<Usuario> usuario = repository.findByEmail(username);
+	
+	  if(usuario.isPresent()) { 
+		  return (UserDetails)usuario.get();
+  }
+  
+  throw new UsernameNotFoundException("Dados invalidos!"); }
 }
 
-}
+

@@ -45,15 +45,16 @@ public class Usuario implements UserDetails {
 	@NotNull
 	@PastOrPresent //passado ou presente mas n o futuro
 	private LocalDateTime instante = LocalDateTime.now();
-	
-	
-	
+
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Perfil> perfis = new ArrayList<>();
 	
 	
-	
-	
+	@Deprecated
+	public Usuario() {
+		
+	}
 
 	@Override
 	public int hashCode() {
@@ -89,14 +90,6 @@ public class Usuario implements UserDetails {
 
 
 
-
-
-
-
-
-
-
-
 	/**
 	 * sempre deixar dica para outros entenderem
 	 * 
@@ -122,8 +115,6 @@ public class Usuario implements UserDetails {
 	}
 
 
-	
-	
 	public Long getId() {
 		return id;
 	}
@@ -173,6 +164,8 @@ public class Usuario implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+
 
 
 
