@@ -171,6 +171,10 @@ public class Usuario implements UserDetails {
 				+ perfis + "]";
 	}
 
+	public String getEmail() {	
+		return this.email;
+	}
+
 
 
 
