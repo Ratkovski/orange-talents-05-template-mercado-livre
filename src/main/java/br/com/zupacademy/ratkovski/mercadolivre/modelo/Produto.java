@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -14,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,7 +29,9 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 
 import br.com.zupacademy.ratkovski.mercadolivre.dto.CaracteristicaProdutoDto;
-import br.com.zupacademy.ratkovski.mercadolivre.dto.ImagemDto;
+import br.com.zupacademy.ratkovski.mercadolivre.dto.Opinioes;
+import net.bytebuddy.implementation.bytecode.collection.CollectionFactory;
+
 
 @Entity
 public class Produto {
@@ -64,6 +70,13 @@ public class Produto {
 	@NotNull
 	@PastOrPresent // passado ou presente mas n o futuro
 	private LocalDateTime instante = LocalDateTime.now();
+	
+	@OneToMany(mappedBy = "produto")
+	@OrderBy("titulo asc")
+	private SortedSet<Pergunta> perguntas = new TreeSet<>();
+
+	@OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE) 
+	private Set<Opiniao> opinioes = new HashSet<>();
 
 	@Deprecated
 	public Produto() {
@@ -108,4 +121,55 @@ public class Produto {
 		return this.usuario;
 	}
 
+	public String getNome() {
+		return nome;
+	}
+
+	public String getDescicao() {
+		return descricao;
+	}
+
+	public BigDecimal getValor() {
+		return valor;
+	}
+//f2
+	public Set<CaracteristicaProduto> getCaracteristicas() {
+		return this.caracteristicas;
+	}
+//f1
+	/*
+	 * public Set<DetalheProdutoCaracteristica>
+	 * mapCaracteristicas(Function<CaracteristicaProduto,
+	 * DetalheProdutoCaracteristica> funcaoMapeadora) { return
+	 * this.caracteristicas.stream().map(funcaoMapeadora).collect(Collectors.toSet()
+	 * ); }
+	 */
+	//mais genérico
+	public <T>Set<T> mapeiaCaracteristicas(Function<CaracteristicaProduto,T> funcaoMapeadora) {
+		return this.caracteristicas.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+	}
+
+	public <T>Set<T>  mapeiaImagens(Function<ImagemProduto,T> funcaoMapeadora) {
+		return this.imagens.stream().map(funcaoMapeadora).collect(Collectors.toSet());
+
+	}
+	public <T extends Comparable<T>>SortedSet<T>  mapeiaPerguntas(Function<Pergunta,T> funcaoMapeadora) {
+		return this.perguntas.stream().map(funcaoMapeadora).collect(Collectors.toCollection(TreeSet :: new));
+
+	}
+	
+	/* no modo 2 coloca em Opinioes
+	 * public <T> Set<T> mapeiaOpinioes(Function<Opiniao,T> funcaoMapeadora) {
+	 * return
+	 * this.opinioes.stream().map(funcaoMapeadora).collect(Collectors.toSet()); }
+	 */
+/**modo2**/
+	public Opinioes getOpinioes() {
+		return new Opinioes(this.opinioes);
+	}
+
+
+	
+	
 }
+

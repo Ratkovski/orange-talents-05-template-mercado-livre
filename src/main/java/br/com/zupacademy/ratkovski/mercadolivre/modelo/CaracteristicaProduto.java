@@ -49,7 +49,14 @@ public class CaracteristicaProduto {
 	  
 	  @Override public String toString() { return "CaracteristicaProdutoDto [nome="
 	  + nome + ", descricao=" + descricao + "]"; }
+
+
+	public String getNome() {
+		return nome;
+	}
 	  
-	 
+	 public String getDescricao() {
+		return descricao;
+	}
 
 }
